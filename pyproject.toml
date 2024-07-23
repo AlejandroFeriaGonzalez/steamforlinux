@@ -9,6 +9,10 @@ packages = [{include = "steamforlinux", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"
+fastapi = "^0.111.1"
+beautifulsoup4 = "^4.12.3"
+pydantic = "^2.8.2"
+requests = "^2.32.3"
 
 
 [build-system]
