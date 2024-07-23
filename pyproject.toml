@@ -1,0 +1,16 @@
+[tool.poetry]
+package-mode = false
+name = "steamforlinux"
+version = "0.1.0"
+description = ""
+authors = ["AlejandroFeriaGonzalez <aferiag@unal.edu.co>"]
+readme = "README.md"
+packages = [{include = "steamforlinux", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
