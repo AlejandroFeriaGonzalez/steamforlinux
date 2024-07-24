@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STEAM FOR LINUX</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
+  </head>
+  <body>
+    <main>
+      <h1>STEAM FOR LINUX</h1>
+      <p>{{ dummy }}</p>
+      <!-- index.html/games?steamid=123 -->
+      <form action="" method="get">
+        <input type="text" name="steamid" placeholder="SteamID" />
+        <button type="submit">Search</button>
+      </form>
+      <!--  
+        class GameInfo(BaseModel):
+            name: str
+            header_image: str
+            platforms: Platform
+         -->
+      <ul>
+        {% for game in games %}
+          {% if game.platforms.linux %}
+            <li>
+              <h2>{{ game.name }}</h2>
+              <img src="{{ game.header_image }}" alt="{{ game.name }}" />
+            </li>
+          {% else %}
+            <li style="color: red;">
+              <h2>{{ game.name }}</h2>
+              <img src="{{ game.header_image }}" alt="{{ game.name }}" style="filter: grayscale(100%);" />
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </main>
+  </body>
+</html>

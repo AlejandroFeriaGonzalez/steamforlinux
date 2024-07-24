@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from models import models
 
 
-def fetch_operating_system_requirements(gameId) -> models.GameRequirements:
+async def fetch_operating_system_requirements(gameId: int) -> models.GameRequirements:
     base_url = "https://store.steampowered.com/app/{gameId}"
     url = base_url.format(gameId=gameId)
     r = requests.get(url)
