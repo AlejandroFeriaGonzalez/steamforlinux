@@ -5,37 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>STEAM FOR LINUX</title>
     <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
+    <style>
+      .games {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem;
+      }
+      
+      .game {
+        border: 1px solid #ccc;
+        padding: 1rem;
+      }
+      
+      .game img {
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
     <main>
       <h1>STEAM FOR LINUX</h1>
-      <p>{{ dummy }}</p>
-      <!-- index.html/games?steamid=123 -->
-      <form action="" method="get">
+      <form hx-get="/get_games" hx-target=".result" hx-indicator="#indicator">
         <input type="text" name="steamid" placeholder="SteamID" />
         <button type="submit">Search</button>
       </form>
-      <!--  
-        class GameInfo(BaseModel):
-            name: str
-            header_image: str
-            platforms: Platform
-         -->
-      <ul>
-        {% for game in games %}
-          {% if game.platforms.linux %}
-            <li>
-              <h2>{{ game.name }}</h2>
-              <img src="{{ game.header_image }}" alt="{{ game.name }}" />
-            </li>
-          {% else %}
-            <li style="color: red;">
-              <h2>{{ game.name }}</h2>
-              <img src="{{ game.header_image }}" alt="{{ game.name }}" style="filter: grayscale(100%);" />
-            </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
     </main>
+
+    <div class="result">
+      <div id="indicator" class="htmx-indicator">Loading...</div>
+    </div>
+
+    <script src="{{ url_for('static', path='/htmx.min.js') }}"></script>
   </body>
 </html>

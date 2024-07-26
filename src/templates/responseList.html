@@ -1,0 +1,19 @@
+<div class="games">
+  {% for game in games %}
+    {% if game.platforms.linux %}
+      <div class="game linux" style="background-color: lightgreen;">
+        <p>
+          <strong>{{ game.name }}</strong>
+        </p>
+        <img src="{{ game.header_image }}" alt="{{ game.name }}" />
+      </div>
+    {% else %}
+      <div class="game not-linux" style="background-color: lightcoral;">
+        <p>
+          <strong>{{ game.name }}</strong>
+        </p>
+        <img src="{{ game.header_image }}" alt="{{ game.name }}" style="filter: grayscale(100%);" />
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>

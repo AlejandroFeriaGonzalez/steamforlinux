@@ -12,9 +12,8 @@ from models import models
 
 SRC = pathlib.Path(__file__).parent.parent
 
-STEAM_API_RESPONSE = (
-    pathlib.Path(__file__).parent.parent / "mocks/steamapi_response.json"
-)
+
+STEAM_API_RESPONSE = SRC / "mocks/steamapi_response.json"
 
 try:
     with open(STEAM_API_RESPONSE) as f:
@@ -26,7 +25,7 @@ except FileNotFoundError:
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=SRC / "templates"), name="static")
-templates = Jinja2Templates(directory=pathlib.Path(__file__).parent.parent / "templates/")
+templates = Jinja2Templates(directory=SRC / "templates/")
 
 # @app.get("/")
 # async def read_root():
@@ -41,6 +40,7 @@ templates = Jinja2Templates(directory=pathlib.Path(__file__).parent.parent / "te
 
 @app.get("/index", response_class=HTMLResponse)
 async def index(request: Request, steamid: int | None = None):
+    """
     if steamid:
         try:
             data = getOwnedGames(steamid)
@@ -52,9 +52,30 @@ async def index(request: Request, steamid: int | None = None):
             return templates.TemplateResponse(request, "index.html", {"games": games})
         except requests.exceptions.RequestException as e:
             return {"error": str(e)}
+    """
 
     return templates.TemplateResponse(request, "index.html")
 
+
+@app.get("/get_games/", response_class=HTMLResponse)
+async def get_games(request: Request, steamid: int):
+    try:
+        data = getOwnedGames(steamid)
+        games: list[models.GameInfo] = []
+
+        for game in data.response.games:
+            game_info = getGameInfo(game.appid)
+            games.append(game_info)
+        return templates.TemplateResponse(request, "responseList.html", {"games": games})
+    except requests.exceptions.RequestException as e:
+        return templates.TemplateResponse(request, "error.html", {"error": str(e)})
+
+@app.get("/hola/")
+async def hola():
+    # 10 secundos de delay
+    import time
+    time.sleep(2)
+    return {"hola": "mundo"}
 
 @app.get("/game/")
 def read_game(appid: int):
