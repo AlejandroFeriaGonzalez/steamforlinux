@@ -1,6 +1,6 @@
 import os
 import requests
-from models import models
+from ..models import models
 import dotenv
 
 dotenv.load_dotenv()

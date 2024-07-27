@@ -1,16 +1,18 @@
 # to run the server, use the following command:
-# fastapi dev .\src\steamforlinux\main.py
+# fastapi dev .\src\main.py
 
-from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 import json
 import pathlib
-from services.steamApi import getOwnedGames, requests, getGameInfo
-from models import models
 
-SRC = pathlib.Path(__file__).parent.parent
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
+from .models import models
+from .services.steamApi import getGameInfo, getOwnedGames, requests
+
+SRC = pathlib.Path(__file__).parent
 
 
 STEAM_API_RESPONSE = SRC / "mocks/steamapi_response.json"
@@ -39,21 +41,7 @@ templates = Jinja2Templates(directory=SRC / "templates/")
 
 
 @app.get("/index", response_class=HTMLResponse)
-async def index(request: Request, steamid: int | None = None):
-    """
-    if steamid:
-        try:
-            data = getOwnedGames(steamid)
-            games: list[models.GameInfo] = []
-
-            for game in data.response.games:
-                game_info = getGameInfo(game.appid)
-                games.append(game_info)
-            return templates.TemplateResponse(request, "index.html", {"games": games})
-        except requests.exceptions.RequestException as e:
-            return {"error": str(e)}
-    """
-
+async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
 
 
@@ -66,16 +54,12 @@ async def get_games(request: Request, steamid: int):
         for game in data.response.games:
             game_info = getGameInfo(game.appid)
             games.append(game_info)
-        return templates.TemplateResponse(request, "responseList.html", {"games": games})
+        return templates.TemplateResponse(
+            request, "responseList.html", {"games": games}
+        )
     except requests.exceptions.RequestException as e:
         return templates.TemplateResponse(request, "error.html", {"error": str(e)})
 
-@app.get("/hola/")
-async def hola():
-    # 10 secundos de delay
-    import time
-    time.sleep(2)
-    return {"hola": "mundo"}
 
 @app.get("/game/")
 def read_game(appid: int):
