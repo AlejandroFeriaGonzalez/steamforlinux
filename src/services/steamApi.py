@@ -1,10 +1,13 @@
 import os
-import httpx
-from ..models import models
+
 import dotenv
+import httpx
+
+from ..models import models
 
 dotenv.load_dotenv()
 KEY = os.getenv("STEAM_API_KEY")
+
 
 async def getOwnedGames(steamid: int) -> models.SteamAPIResponse:
     url = f"http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key={KEY}&steamid={steamid}&format=json"
@@ -16,6 +19,7 @@ async def getOwnedGames(steamid: int) -> models.SteamAPIResponse:
             return models.SteamAPIResponse(**r.json())
     except httpx.RequestError as e:
         raise e
+
 
 async def getGameInfo(appid: int):
     base_url = f"https://store.steampowered.com/api/appdetails?appids={appid}"
