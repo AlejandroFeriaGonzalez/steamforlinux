@@ -1,9 +1,7 @@
 # python -m src.main
 
 import pathlib
-from os import getenv
 
-import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -51,8 +49,3 @@ async def read_game(appid: int):
         return await getGameInfo(appid)
     except httpx.RequestError as e:
         return {"error": str(e)}
-
-
-if __name__ == "__main__":
-    port = getenv("PORT", 8000)
-    uvicorn.run(app, host="0.0.0.0", port=port)
