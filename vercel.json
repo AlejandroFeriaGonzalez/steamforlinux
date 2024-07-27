@@ -1,7 +1,8 @@
 {
+    "version": 2,
     "builds": [
       {
-        "src": "src/main.py",
+        "src": "/src/main.py",
         "use": "@vercel/node"
       }
     ],
