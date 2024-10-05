@@ -18,7 +18,7 @@ COPY ./src /app/src
 # COPY static/ ./static/
 
 # Copiar el archivo .env al contenedor
-COPY .env /app/.env
+# COPY .env /app/.env
 
 # Exponer el puerto en el que la aplicación correrá
 # EXPOSE 8000
