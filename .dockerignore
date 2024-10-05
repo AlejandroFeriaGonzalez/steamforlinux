@@ -1,0 +1,11 @@
+# Ignorar archivos y directorios innecesarios
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.venv
+*.idea/
+.vercel
