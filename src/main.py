@@ -1,6 +1,7 @@
 # python -m src.main
 
 import pathlib
+import asyncio
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -48,14 +49,14 @@ async def index(request: Request):
 async def get_games(request: Request, steamid: int):
     try:
         data = await getOwnedGames(steamid)
-        games: list[models.GameInfo] = []
+        game_ids = [game.appid for game in data.response.games]
 
-        for game in data.response.games:
-            game_info = await getGameInfo(game.appid)
-            games.append(game_info)
+        games = await asyncio.gather(*[getGameInfo(appid) for appid in game_ids])
+
         return templates.TemplateResponse(
             request, "responseList.html", {"games": games}
         )
+
     except httpx.RequestError as e:
         return templates.TemplateResponse(request, "error.html", {"error": str(e)})
     except httpx.HTTPStatusError as e:

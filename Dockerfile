@@ -25,3 +25,5 @@ COPY ./src /app/src
 
 # Comando para correr la aplicación
 CMD ["fastapi", "run", "src/main.py", "--port", "80"]
+
+# docker run --env-file .env  -p 80:80 steamforlinux

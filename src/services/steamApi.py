@@ -48,7 +48,7 @@ async def getGameInfo(appid: int) -> models.GameInfo:
     Raises:
         httpx.RequestError: If there is an error while making the HTTP request to the Steam API.
     """
-
+    print(f"Inicio {appid}")
     base_url = f"https://store.steampowered.com/api/appdetails?appids={appid}"
 
     try:
@@ -59,6 +59,7 @@ async def getGameInfo(appid: int) -> models.GameInfo:
 
             if response["success"]:
                 data = response["data"]
+                print(f"Fin {appid}")
                 return models.GameInfo(**data)
             else:
                 print(f"Game with appid {appid} not found")
