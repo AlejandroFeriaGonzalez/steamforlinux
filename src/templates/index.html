@@ -26,16 +26,21 @@
   <body>
     <main>
       <h1>STEAM FOR LINUX</h1>
-      <form hx-get="/get_games" hx-target=".result" hx-indicator="#indicator">
+      <form id="search-form" hx-get="/get_games" hx-target=".result" hx-indicator="#indicator">
         <input type="number" name="steamid" placeholder="SteamID" />
         <button type="submit">Search</button>
       </form>
     </main>
 
-    <div class="result">
-      <div id="indicator" class="htmx-indicator">Loading...</div>
-    </div>
+    <div id="indicator" class="htmx-indicator">Loading...</div>
+
+    <div class="result"></div>
 
     <script src="{{ url_for('static', path='/htmx.min.js') }}"></script>
+    <script>
+      document.getElementById('search-form').addEventListener('submit', function () {
+        document.querySelector('.result').innerHTML = ''
+      })
+    </script>
   </body>
 </html>

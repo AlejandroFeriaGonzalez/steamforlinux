@@ -1,7 +1,7 @@
 # python -m src.main
 
-import pathlib
 import asyncio
+import pathlib
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -9,7 +9,6 @@ from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from .models import models
 from .services.steamApi import getGameInfo, getOwnedGames, httpx
 
 SRC = pathlib.Path(__file__).parent
