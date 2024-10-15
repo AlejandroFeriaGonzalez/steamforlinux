@@ -1,8 +1,10 @@
 # python -m src.main
 
 import asyncio
+import os
 import pathlib
 
+import dotenv
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -10,6 +12,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from .services.steamApi import getGameInfo, getOwnedGames, httpx
+
+dotenv.load_dotenv()
+MODE = os.getenv("MODE")
 
 SRC = pathlib.Path(__file__).parent
 
@@ -24,14 +29,24 @@ app = FastAPI(
         "url": "https://www.apache.org/licenses/LICENSE-2.0.html",
     },
     contact={
-        "name": "Deadpoolio the Amazing",
-        "url": "http://x-force.example.com/contact/",
-        "email": "dp@x-force.example.com",
+        "name": "Alejandro Feria Gonzalez",
+        "url": "https://github.com/AlejandroFeriaGonzalez",
+        "email": "alejandroferiagonzalez@gmail.com",
     },
 )
 
 app.mount("/static", StaticFiles(directory=SRC / "templates"), name="static")
 templates = Jinja2Templates(directory=SRC / "templates/")
+
+
+@app.middleware("http")
+async def https_redirect(request: Request, call_next):
+    print(MODE)
+    if MODE == "production" and request.url.scheme == "http":
+        url = request.url.replace(scheme="https")
+        return RedirectResponse(url)
+    response = await call_next(request)
+    return response
 
 
 @app.get("/")
