@@ -24,6 +24,6 @@ COPY ./src /app/src
 # EXPOSE 8000
 
 # Comando para correr la aplicación
-CMD ["fastapi", "run", "src/main.py", "--port", "80"]
+CMD ["fastapi", "run", "src/main.py", "--port", "8080"]
 
 # docker run --env-file .env  -p 80:80 steamforlinux
