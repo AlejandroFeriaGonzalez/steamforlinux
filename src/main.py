@@ -1,20 +1,17 @@
 # python -m src.main
 
 import asyncio
-import os
 import pathlib
 
-import dotenv
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 
 from .services.steamApi import getGameInfo, getOwnedGames, httpx
 
-dotenv.load_dotenv()
-MODE = os.getenv("MODE")
 
 SRC = pathlib.Path(__file__).parent
 
@@ -35,18 +32,17 @@ app = FastAPI(
     },
 )
 
-app.mount("/static", StaticFiles(directory=SRC / "templates"), name="static")
-templates = Jinja2Templates(directory=SRC / "templates/")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Cambia esto para más seguridad en producción
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+app.mount("/static", StaticFiles(directory=SRC / "static"), name="static")
+templates = Jinja2Templates(directory=SRC / "static/")
 
-@app.middleware("http")
-async def https_redirect(request: Request, call_next):
-    print(MODE)
-    if MODE == "production" and request.url.scheme == "http":
-        url = request.url.replace(scheme="https")
-        return RedirectResponse(url)
-    response = await call_next(request)
-    return response
 
 
 @app.get("/")
