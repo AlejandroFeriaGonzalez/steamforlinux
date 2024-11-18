@@ -21,7 +21,7 @@ COPY ./src /app/src
 # COPY .env /app/.env
 
 # Exponer el puerto en el que la aplicación correrá
-# EXPOSE 8000
+EXPOSE 8080
 
 # Comando para correr la aplicación
 CMD ["fastapi", "run", "src/main.py", "--port", "8080"]
