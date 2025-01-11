@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .services.steamApi import getGameInfo, getOwnedGames, httpx
 
+from .models import models
 
 SRC = pathlib.Path(__file__).parent
 
@@ -54,9 +55,25 @@ async def root():
 async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
 
-
-@app.get("/get_games/", response_class=HTMLResponse)
+@app.get("/get_games/", response_class=JSONResponse, response_model=models.GameCollection)
 async def get_games(request: Request, steamid: int):
+    try:
+        data = await getOwnedGames(steamid)
+        game_ids = [game.appid for game in data.response.games]
+
+        games = await asyncio.gather(*[getGameInfo(appid) for appid in game_ids])
+
+        return {"games": games}
+
+    except httpx.RequestError as e:
+        return {"httpx.RequestError": str(e)}
+    except httpx.HTTPStatusError as e:
+        return {"httpx.HTTPStatusError": str(e)}
+    except Exception as e:
+        return {"error": str(e)}
+
+@app.get("/render_owned_games/", response_class=HTMLResponse)
+async def render_owned_games(request: Request, steamid: int):
     try:
         data = await getOwnedGames(steamid)
         game_ids = [game.appid for game in data.response.games]
@@ -87,3 +104,19 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         status_code=422,
         content={"detail": exc.errors(), "body": exc.body},
     )
+
+@app.get("/mock", response_class=JSONResponse)
+def test():
+    import json
+    from pathlib import Path
+    
+    try:
+        json_path = Path(__file__).parent / "mocks" / "games.json"
+        with open(json_path, "r") as f:
+            games_data = json.load(f)
+        return games_data
+    except FileNotFoundError:
+        return JSONResponse(
+            status_code=404,
+            content={"error": "Games data file not found"}
+        )
