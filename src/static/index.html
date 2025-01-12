@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>STEAM FOR LINUX</title>
-    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
+    <!-- <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" /> -->
+    <link href="{{ url_for('static', path='./output.css') }}" rel="stylesheet">
+    
     <style>
       .games {
         display: grid;
@@ -26,7 +28,7 @@
   </head>
   <body>
     <main>
-      <h1>STEAM FOR LINUX</h1>
+      <h1 class="text-red-500">STEAM FOR LINUX</h1>
       <form id="search-form" hx-get="/render_owned_games" hx-target="#result" hx-indicator="#indicator">
         <input type="number" name="steamid" placeholder="SteamID" />
         <button type="submit">Search</button>
