@@ -1,18 +1,28 @@
-<div class="games">
+<div class="grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-6 p-6">
   {% for game in games %}
     {% if game.platforms.linux %}
-      <div class="game linux" style="background-color: lightgreen;">
-        <p>
-          <strong>{{ game.name }}</strong>
-        </p>
-        <img src="{{ game.header_image }}" alt="{{ game.name }}" />
+      <div class="group relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-emerald-500/20">
+        <div class="absolute inset-0 bg-gradient-to-b from-emerald-600/20 to-emerald-950/90 z-10"></div>
+        <img src="{{ game.header_image }}" alt="{{ game.name }}" 
+          class="w-full h-[150px] object-cover transition-transform duration-300 group-hover:scale-110" />
+        <div class="absolute bottom-0 left-0 right-0 p-4 z-20">
+          <p class="font-bold text-emerald-300 text-lg truncate mb-2">{{ game.name }}</p>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-300">
+            Linux Compatible
+          </span>
+        </div>
       </div>
     {% else %}
-      <div class="game not-linux" style="background-color: lightcoral;">
-        <p>
-          <strong>{{ game.name }}</strong>
-        </p>
-        <img src="{{ game.header_image }}" alt="{{ game.name }}" style="filter: grayscale(100%);" />
+      <div class="group relative rounded-xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-red-500/20">
+        <div class="absolute inset-0 bg-gradient-to-b from-red-600/20 to-red-950/90 z-10"></div>
+        <img src="{{ game.header_image }}" alt="{{ game.name }}" 
+          class="w-full h-[150px] object-cover grayscale transition-transform duration-300 group-hover:scale-110" />
+        <div class="absolute bottom-0 left-0 right-0 p-4 z-20">
+          <p class="font-bold text-red-300 text-lg truncate mb-2">{{ game.name }}</p>
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-300">
+            Not Compatible
+          </span>
+        </div>
       </div>
     {% endif %}
   {% endfor %}
