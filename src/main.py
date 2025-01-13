@@ -88,10 +88,10 @@ async def render_owned_games(request: Request, steamid: int):
             request, "responseList.html", {"games": games}
         )
 
-    except httpx.RequestError as e:
-        return templates.TemplateResponse(request, "error.html", {"error": str(e)})
-    except httpx.HTTPStatusError as e:
-        return templates.TemplateResponse(request, "error.html", {"error": str(e)})
+    except httpx.RequestError:
+        return templates.TemplateResponse(request, "error.html")
+    except httpx.HTTPStatusError:
+        return templates.TemplateResponse(request, "error.html")
 
 
 @app.get("/game/")
