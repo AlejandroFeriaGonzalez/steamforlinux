@@ -1,49 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
-    <title>STEAM FOR LINUX</title>
-    <!-- <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" /> -->
-    <link href="{{ url_for('static', path='./output.css') }}" rel="stylesheet">
-    
-    <style>
-      .games {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
-        margin: 1rem;
-      }
-      
-      .game {
-        border: 1px solid #ccc;
-        padding: 1rem;
-      }
-      
-      .game img {
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <main>
-      <h1 class="text-red-500">STEAM FOR LINUX</h1>
-      <form id="search-form" hx-get="/render_owned_games" hx-target="#result" hx-indicator="#indicator">
-        <input type="number" name="steamid" placeholder="SteamID" />
-        <button type="submit">Search</button>
-      </form>
-    </main>
 
-    <div id="indicator" class="htmx-indicator">Loading...</div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+  <title>STEAM FOR LINUX</title>
+  <!-- <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" /> -->
+  <link href="{{ url_for('static', path='./output.css') }}" rel="stylesheet">
 
-    <div id="result"></div>
+  <style>
+    .games {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem;
+    }
 
-    <script src="{{ url_for('static', path='/htmx.min.js') }}"></script>
-    <script>
-      document.getElementById('search-form').addEventListener('submit', function () {
-        document.querySelector('#result').innerHTML = ''
-      })
-    </script>
-  </body>
+    .game {
+      border: 1px solid #ccc;
+      padding: 1rem;
+    }
+
+    .game img {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 class="text-red-500">STEAM FOR LINUX</h1>
+  <form id="search-form" hx-get="/render_mock" hx-target="#result" hx-indicator="#indicator">
+    <input type="number" name="steamid" placeholder="SteamID" />
+    <button type="submit">Search</button>
+  </form>
+
+  <div id="indicator" class="htmx-indicator">Loading...</div>
+
+  <div id="result"></div>
+
+  <script src="{{ url_for('static', path='/htmx.min.js') }}"></script>
+  <script>
+    document.getElementById('search-form').addEventListener('submit', function () {
+      document.querySelector('#result').innerHTML = ''
+    })
+  </script>
+</body>
+
 </html>

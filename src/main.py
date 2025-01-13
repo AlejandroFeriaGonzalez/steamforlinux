@@ -1,18 +1,19 @@
 # python -m src.main
 
 import asyncio
+import json
 import pathlib
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.middleware.cors import CORSMiddleware
-
-from .services.steamApi import getGameInfo, getOwnedGames, httpx
 
 from .models import models
+import pydantic
+from .services.steamApi import getGameInfo, getOwnedGames, httpx
 
 SRC = pathlib.Path(__file__).parent
 
@@ -45,7 +46,6 @@ app.mount("/static", StaticFiles(directory=SRC / "static"), name="static")
 templates = Jinja2Templates(directory=SRC / "static/")
 
 
-
 @app.get("/")
 async def root():
     return RedirectResponse(url="/index")
@@ -55,7 +55,10 @@ async def root():
 async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
 
-@app.get("/get_games/", response_class=JSONResponse, response_model=models.GameCollection)
+
+@app.get(
+    "/get_games/", response_class=JSONResponse, response_model=models.GameCollection
+)
 async def get_games(request: Request, steamid: int):
     try:
         data = await getOwnedGames(steamid)
@@ -71,6 +74,7 @@ async def get_games(request: Request, steamid: int):
         return {"httpx.HTTPStatusError": str(e)}
     except Exception as e:
         return {"error": str(e)}
+
 
 @app.get("/render_owned_games/", response_class=HTMLResponse)
 async def render_owned_games(request: Request, steamid: int):
@@ -105,18 +109,31 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": exc.errors(), "body": exc.body},
     )
 
+
 @app.get("/mock", response_class=JSONResponse)
 def test():
-    import json
-    from pathlib import Path
-    
     try:
-        json_path = Path(__file__).parent / "mocks" / "games.json"
+        json_path = pathlib.Path(__file__).parent / "mocks" / "games.json"
         with open(json_path, "r") as f:
             games_data = json.load(f)
         return games_data
     except FileNotFoundError:
         return JSONResponse(
-            status_code=404,
-            content={"error": "Games data file not found"}
+            status_code=404, content={"error": "Games data file not found"}
+        )
+
+
+@app.get("/render_mock")
+async def render_mock(request: Request):
+    try:
+        json_path = pathlib.Path(__file__).parent / "mocks" / "games.json"
+        with open(json_path, "r") as f:
+            games_data = json.load(f)
+            games: list[models.GameInfo] = games_data["games"]
+        return templates.TemplateResponse(
+            request, "responseList.html", {"games": games}
+        )
+    except FileNotFoundError:
+        return templates.TemplateResponse(
+            request, "error.html", {"error": "Games data file not found"}
         )
